@@ -5,6 +5,9 @@ const status = document.getElementById("status");
 const studentData = document.getElementById("student-container");
 const courseData = document.getElementById("courses-container");
 
+/*---------------VERSION 1-------------------*/
+
+//Data
 const auth = true;
 
 const student = {
@@ -34,6 +37,7 @@ function loadStudentData() {
 //Render Student Data in the DOM
 const renderStudent = function (student) {
   studentData.innerHTML = `
+    <h3>Student Info:</h3>
     <p>Student name: ${student.name}</p>
     <p>Program: ${student.program}</p>
     <p>Semester: ${student.semester}</p>
@@ -52,7 +56,6 @@ btnStd.addEventListener("click", () => {
       })
       .catch((error) => {
         studentData.textContent = error;
-        console.log(error);
       });
   }, 1000);
 });
@@ -63,7 +66,7 @@ function getCoursesData() {
     if (auth) {
       resolve(courses);
     } else {
-      resolve("could not retrive course data");
+      reject("could not retrive course data");
     }
   });
 }
@@ -80,6 +83,7 @@ btnCourses.addEventListener("click", () => {
     getCoursesData()
       .then((courses) => {
         courseData.innerHTML = "";
+        courseData.innerHTML = `<h3>Cousers</h3>`;
         courses.forEach((course) => {
           renderCourses(course);
         });
@@ -98,3 +102,5 @@ btnClear.addEventListener("click", () => {
   courseData.innerHTML = "";
   status.textContent = "Ready";
 });
+
+//VERSION 2
