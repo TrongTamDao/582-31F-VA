@@ -204,7 +204,7 @@ btnSubmit.addEventListener("click", (e) => {
     .then((student) => {
       renderStudent(student);
       status.textContent = "Loaded successfully";
-      studentName.value = ""; // ✅ Clear after success
+      studentName.value = "";
       studentID.value = "";
     })
     .catch((error) => {
