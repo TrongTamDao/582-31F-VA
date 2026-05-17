@@ -54,7 +54,7 @@ const renderUserCard = function (user) {
           <div id="post-${user.id}"></div>
         </div>
       </div>
-    </div>,
+    </div>
     `,
   );
 };
@@ -94,4 +94,8 @@ btnLoadUser.addEventListener("click", () => {
       });
     });
   });
+});
+
+btnClear.addEventListener("click", () => {
+  clearDashboard();
 });
