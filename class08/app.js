@@ -3,14 +3,21 @@ const btnLoadUser = document.getElementById("load-user");
 const btnClear = document.getElementById("clear");
 const status = document.getElementById("status");
 const output = document.getElementById("output");
-const className = document.querySelector(".alert");
+const searchInput = document.getElementById("searchField");
+const btnSearch = document.getElementById("searchBtn");
 
+//FUNCTIONS
 const setStatus = function (message, type) {
   status.textContent = message;
-  if (!status.classList.contains(`${type}`)) {
-    status.classList.add(`${type}`);
-  } else {
-    status.classList.remove(`${type}`);
+
+  status.classList.remove(
+    "text-bg-danger",
+    "text-bg-success",
+    "text-bg-warning",
+  );
+
+  if (type) {
+    status.classList.add(type);
   }
 };
 
@@ -18,10 +25,6 @@ const clearDashboard = function () {
   output.innerHTML = "";
   status.textContent = "Ready";
 };
-
-// fetch("https://jsonplaceholder.typicode.com/posts/")
-//   .then((response) => response.json())
-//   .then((posts) => console.log(posts));
 
 const loadUsers = function () {
   return fetch("https://jsonplaceholder.typicode.com/users")
@@ -77,10 +80,39 @@ const loadPostsForUsers = function (user) {
 const renderPost = function (post, postContainer) {
   postContainer.innerHTML = `
         ${post.body}
-
     `;
 };
 
+//SEARCH USER
+btnSearch.addEventListener("click", () => {
+  loadUsers()
+    .then((users) => {
+      return users.find((user) => user.name === searchInput.value);
+    })
+    .then((user) => {
+      output.innerHTML = "";
+      if (!user) {
+        setStatus("Not found", "text-bg-danger");
+      } else {
+        renderUserCard(user);
+        const btnLoadPost = document.getElementById(`loadPost-${user.id}`);
+        //   console.log(btnLoadPost);
+        const postContainer = document.getElementById(`post-${user.id}`);
+        //   console.log(postContainer);
+        btnLoadPost.addEventListener("click", () => {
+          setStatus("", "spinner-border");
+          setTimeout(() => {
+            loadPostsForUsers(user).then((post) => {
+              renderPost(post, postContainer);
+            });
+            setStatus("Loading post completed", "spinner-border");
+          }, 1000);
+        });
+      }
+    });
+});
+
+//DISPLAY ALL USERS
 btnLoadUser.addEventListener("click", () => {
   setStatus("", "spinner-border");
   output.innerHTML = "";
