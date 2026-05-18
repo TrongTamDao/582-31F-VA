@@ -7,7 +7,11 @@ const className = document.querySelector(".alert");
 
 const setStatus = function (message, type) {
   status.textContent = message;
-  className.classList.add(".type");
+  if (!status.classList.contains(`${type}`)) {
+    status.classList.add(`${type}`);
+  } else {
+    status.classList.remove(`${type}`);
+  }
 };
 
 const clearDashboard = function () {
@@ -50,7 +54,7 @@ const renderUserCard = function (user) {
           <p>
             <strong>Company name:</strong> ${user.company.name}
           </p>
-          <button id="loadPost-${user.id}">Load post</button>
+          <button id="loadPost-${user.id}" data-bs-toggle="collapse" data-bs-target="#post-${user.id}">Load post</button>
           <div id="post-${user.id}"></div>
         </div>
       </div>
@@ -78,22 +82,29 @@ const renderPost = function (post, postContainer) {
 };
 
 btnLoadUser.addEventListener("click", () => {
+  setStatus("", "spinner-border");
   output.innerHTML = "";
-  loadUsers().then((users) => {
-    users.forEach((user) => {
-      renderUserCard(user);
-
-      const btnLoadPost = document.getElementById(`loadPost-${user.id}`);
-      //   console.log(btnLoadPost);
-      const postContainer = document.getElementById(`post-${user.id}`);
-      //   console.log(postContainer);
-      btnLoadPost.addEventListener("click", () => {
-        loadPostsForUsers(user).then((post) => {
-          renderPost(post, postContainer);
+  setTimeout(() => {
+    loadUsers().then((users) => {
+      users.forEach((user) => {
+        renderUserCard(user);
+        const btnLoadPost = document.getElementById(`loadPost-${user.id}`);
+        //   console.log(btnLoadPost);
+        const postContainer = document.getElementById(`post-${user.id}`);
+        //   console.log(postContainer);
+        btnLoadPost.addEventListener("click", () => {
+          setStatus("", "spinner-border");
+          setTimeout(() => {
+            loadPostsForUsers(user).then((post) => {
+              renderPost(post, postContainer);
+            });
+            setStatus("Loading post completed", "spinner-border");
+          }, 1000);
         });
       });
+      setStatus("Loading completed", "spinner-border");
     });
-  });
+  }, 1000);
 });
 
 btnClear.addEventListener("click", () => {
