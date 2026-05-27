@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <title>Modular User Viewer</title>
+  </head>
+  <body>
+    <section class="container mx-3 py-4 text-center">
+      <h1>Modular User Viewer</h1>
+      <p id="status">Click the button to load users.</p>
+      <button id="load-users-btn" class="btn btn-primary my-3">
+        Load user
+      </button>
+      <div id="users-container" class="row row-cols-1 row-cols-md-3 g-4"></div>
+    </section>
+
+    <section class="container mx-3 py-4 text-center">
+      <p>Click the button to load posts</p>
+      <button id="load-posts-btn" class="btn btn-secondary">Click me</button>
+      <div id="posts-container" class="row g-3"></div>
+    </section>
+    <script type="module" src="app.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
