@@ -23,7 +23,14 @@
 
     <section class="container mx-3 py-4 text-center">
       <p>Click the button to load posts</p>
-      <button id="load-posts-btn" class="btn btn-secondary">Click me</button>
+      <button
+        id="load-posts-btn"
+        class="btn btn-secondary mb-3"
+        data-bs-toggle="collapse"
+        data-bs-target="#posts-container"
+      >
+        Click me
+      </button>
       <div id="posts-container" class="row g-3"></div>
     </section>
     <script type="module" src="app.js"></script>

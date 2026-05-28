@@ -30,8 +30,12 @@ loadUsersBtn.addEventListener("click", () => {
 });
 
 loadPostBtn.addEventListener("click", () => {
-  fetchPosts().then((posts) => {
-    const sameUserPost = posts.filter((post) => post.userId === 2);
-    renderPosts(sameUserPost, postContainer);
-  });
+  fetchPosts()
+    .then((posts) => {
+      const sameUserPost = posts.filter((post) => post.userId === 2);
+      renderPosts(sameUserPost, postContainer);
+    })
+    .catch((error) => {
+      status.textContent = `Fail to load post: ${error.message}`;
+    });
 });
