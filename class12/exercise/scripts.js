@@ -45,6 +45,7 @@ loadCommentBtn.addEventListener("click", () => {
       });
   } catch (error) {
     status.textContent = error.message;
+  } finally {
     loadCommentBtn.disabled = false;
   }
 });
