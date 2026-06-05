@@ -2,6 +2,7 @@ const input = document.getElementById("comment-number-input");
 const status = document.getElementById("status");
 const loadCommentBtn = document.getElementById("load-comment-btn");
 const output = document.getElementById("output");
+const clearBtn = document.getElementById("clear-comment-btn");
 
 // try {
 //   JSON.parse("{ name: Alice }");
@@ -38,14 +39,22 @@ loadCommentBtn.addEventListener("click", () => {
         status.textContent = "Post loaded successfully";
       })
       .catch((error) => {
+        status.style.color = "red";
         status.textContent = `Fail to load comment: ${error.message}`;
       })
       .finally(() => {
         loadCommentBtn.disabled = false;
       });
   } catch (error) {
+    status.style.color = "red";
     status.textContent = error.message;
   } finally {
     loadCommentBtn.disabled = false;
   }
+});
+
+clearBtn.addEventListener("click", () => {
+  output.innerHTML = "";
+  status.textContent = "Ready";
+  input.value = "";
 });
