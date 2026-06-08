@@ -144,13 +144,13 @@ const students = [student1, student2];
 
 // Authenticate
 
-const authenticate = function (inputstudentName, inputstudentID) {
+const authenticate = function (inputStudentName, inputStudentID) {
   const currentStudent = students.find(
     (student) =>
-      student.name.toLowerCase() === inputstudentName.toLowerCase().trim(),
+      student.name.toLowerCase() === inputStudentName.toLowerCase().trim(),
   );
 
-  if (currentStudent?.studentID === Number(inputstudentID)) {
+  if (currentStudent?.studentID === Number(inputStudentID)) {
     status.textContent = "Authenticated successfully";
     return currentStudent;
   }
@@ -163,7 +163,6 @@ const loadStudent = function (student) {
     setTimeout(() => {
       if (student) {
         resolve(student);
-        console.log(student);
       } else reject("No data");
     }, 1000);
   });
@@ -187,7 +186,7 @@ const renderStudent = function (student) {
 };
 
 btnSubmit.addEventListener("click", (e) => {
-  e.preventDefault();
+  // e.preventDefault();
 
   const student = authenticate(studentName.value, studentID.value);
 
@@ -218,6 +217,6 @@ btnSubmit.addEventListener("click", (e) => {
 //Clear Button
 btnClear.addEventListener("click", () => {
   studentData.innerHTML = "";
-  courseData.innerHTML = "";
+  // courseData.innerHTML = "";
   status.textContent = "Ready.";
 });
