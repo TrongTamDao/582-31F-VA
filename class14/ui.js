@@ -52,8 +52,12 @@ export const renderTournament = function (output, tournament) {
   `;
 };
 
-export const clearContent = function (output) {
+export const clearContent = function (output, status) {
   output.innerHTML = `<p class="text-muted col">No tournaments loaded yet.</p>`;
+  status.innerHTML = `<p id="status" class="text-muted fst-italic">
+            Click "Load Tournaments" to see available tournaments.
+          </p>`;
+  status.className = "";
 };
 
 export const renderRegistration = function (registrations, container) {

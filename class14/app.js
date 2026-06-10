@@ -2,10 +2,12 @@ import { getTournamentData } from "./api.js";
 import { getRegistrationData } from "./api.js";
 import { renderTournament } from "./ui.js";
 import { clearContent } from "./ui.js";
+import { setStatus } from "./ui.js";
 
 const btnTournament = document.getElementById("btnLoad");
 const btnClear = document.getElementById("btnClear");
 const output = document.getElementById("tournamentGrid");
+const status = document.getElementById("status");
 
 btnTournament.addEventListener("click", () => {
   output.innerHTML = "";
@@ -21,8 +23,9 @@ btnTournament.addEventListener("click", () => {
     .catch((error) => {
       console.log(error.message);
     });
+  setStatus("Loading completed", "success");
 });
 
 btnClear.addEventListener("click", () => {
-  clearContent(output);
+  clearContent(output, status);
 });
