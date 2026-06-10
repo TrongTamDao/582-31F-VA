@@ -1,0 +1,1 @@
+const renderTournament = function (tournament) {};
