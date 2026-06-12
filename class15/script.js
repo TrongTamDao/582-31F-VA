@@ -1,0 +1,128 @@
+// Customer Elements
+
+// a different approach to create our own HTML tags and teach the brower what they mean
+
+// Custom elements offer a new path where: we define a reusable HTML tag once and use it whenever needed
+
+// built-in tags are like: <div> , <p>, <button>
+
+/* <user-card></user-card> */
+// defining our own tags would be:
+
+//  <user-card> - <movie-ticket> - <arcade-game>
+
+// IMPORTANT RULE:
+
+// custom element names MUST include a hyphen.
+
+// <user-card> is valid
+// <usercard> is invalid
+
+// if we want to create custom elements we need to follow this recipe:
+
+// 1. create a class that extends HTMLElement
+// 2. register it with customElements.define()
+// 3. use the new tag in HTML
+
+class HelloBox extends HTMLElement {
+  connectedCallback() {
+    this.innerHTML = `
+        <div>
+            <h2>Hello from a custom element</h2>
+            <p>This content was created by the browser using our class.</p>
+        </div>
+        `;
+  }
+}
+
+customElements.define("hello-box", HelloBox);
+
+// ^^^ now the browser knows what to do when it sees that tag.
+
+// why connectedCallback matters?
+
+// render content
+// read attributes
+// initialize UI behaviour.
+
+// you don't need to overload with ever lifecycle method.
+
+/**
+ // let's make it Dynamic!
+ * 
+ */
+
+class UserCard extends HTMLElement {
+  connectedCallback() {
+    // getAttribute reads the value from the HTML tag.
+    const name = this.getAttribute("name"); // the data inside the component
+    const role = this.getAttribute("role"); // the data inside the component
+
+    // HTML provides the input, and the custom element renders
+    // based on that input.
+
+    this.innerHTML = `
+        <div>
+            <h2>Name: ${name} </h2>
+            <p>Role: ${role} </p>
+        </div>
+        `;
+  }
+}
+
+customElements.define("user-card", UserCard);
+
+// A custom element becomes much more useful when it is not hard-coded.
+
+// 1. tell JS that we're creating a custom element
+class GameCard extends HTMLElement {
+  // 2. The first thing that executes when the element is used
+  connectedCallback() {
+    // 3. Get the attributes
+    // we want to get the HTML input for Title, Genre, Players
+    const title = this.getAttribute("title");
+    const genre = this.getAttribute("genre");
+    const players = this.getAttribute("players");
+
+    // 4. display the DOM
+    this.innerHTML = `
+    <div>
+        <h1>${title}</h1>
+        <h6>${genre}</h6>
+        <h7>${players}</h7>
+    </div>
+    `;
+  }
+}
+
+// 5. define the class with the tag name
+customElements.define("game-card", GameCard);
+
+// We're getting reusable UI!
+//  clean HTML usage
+// we're thinking about components, and a better architecture of our code
+//              repeated card structures are now becoming custom elements.
+
+// Improving rendering with helper method
+
+class CourseName extends HTMLElement {
+  connectedCallback() {
+    this.render2();
+  }
+
+  render2() {
+    const title = this.getAttribute("title");
+    const credit = this.getAttribute("credits");
+    const instructor = this.getAttribute("instructor");
+
+    this.innerHTML = `
+    <article>
+        <h2>${title}</h2>
+        <p><strong>Credits:</strong>${credits}</p>
+        <p><strong>Instructor:</strong>${instructor}</p>
+    </artcile>
+    `;
+  }
+}
+
+customElements.define("course-name", CourseName);
