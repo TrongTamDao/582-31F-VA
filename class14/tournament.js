@@ -41,3 +41,35 @@ export class Tournament {
     );
   }
 }
+
+export class FeaturedTournament extends Tournament {
+  constructor(
+    id,
+    name,
+    game,
+    entryFee,
+    maxPlayers,
+    registeredPlayers,
+    status,
+    features,
+  ) {
+    super(id, name, game, entryFee, maxPlayers, registeredPlayers, status);
+    this.features;
+  }
+}
+
+export class PremiumTournament extends Tournament {
+  constructor(
+    id,
+    name,
+    game,
+    entryFee,
+    maxPlayers,
+    registeredPlayers,
+    status,
+    premium,
+  ) {
+    super(id, name, game, entryFee, maxPlayers, registeredPlayers, status);
+    this.premium;
+  }
+}

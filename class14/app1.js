@@ -16,9 +16,12 @@ const output = document.getElementById("tournamentGrid");
 const status = document.getElementById("status");
 const registered = document.getElementById("registrationPanel");
 const registeredSummary = document.getElementById("summary");
+const btnSearch = document.getElementById("search");
+const searchedTournament = document.getElementById("tournament-search");
 
 // ── State ─────────────────────────────────────────────
 let tournamentData = [];
+let registrationCache = null;
 
 // ── Load tournaments ──────────────────────────────────
 btnLoad.addEventListener("click", async () => {
@@ -37,6 +40,29 @@ btnLoad.addEventListener("click", async () => {
     btnLoad.disabled = false;
   }
 });
+// ---Search Tournament---------------------------------
+
+btnSearch.addEventListener("click", () => {
+  const query = searchedTournament.value.trim().toLowerCase();
+  if (!query) {
+    setStatus("Search is empty", "danger");
+    return;
+  }
+  output.innerHTML = "";
+  const foundTournament = tournamentData.filter(
+    (t) =>
+      t.game.trim().toLowerCase().includes(query) ||
+      t.name.trim().toLowerCase().includes(query),
+  );
+
+  if (foundTournament.length === 0) {
+    setStatus("Not found", "danger");
+    return;
+  }
+  foundTournament.forEach((s) => {
+    renderTournament(output, s);
+  });
+});
 
 // ── View registrations ────────────────────────────────
 document.addEventListener("click", async (e) => {
@@ -49,7 +75,9 @@ document.addEventListener("click", async (e) => {
   btn.disabled = true;
 
   try {
-    const registrations = await getRegistrationData("registrations.json");
+    if (!registrationCache) {
+      const registrationCache = await getRegistrationData("registrations.json");
+    }
     const filtered = registrations.filter(
       (r) => r.tournamentId === tournamentId,
     );
@@ -86,7 +114,14 @@ document.addEventListener("click", async (e) => {
 
 // ── Clear ─────────────────────────────────────────────
 btnClear.addEventListener("click", () => {
-  clearContent(output, status, registered, registeredSummary);
+  registrationCache = null;
+  clearContent(
+    output,
+    status,
+    registered,
+    registeredSummary,
+    searchedTournament,
+  );
 });
 
 // Here's what changed and why:

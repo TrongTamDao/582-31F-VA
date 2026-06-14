@@ -200,12 +200,13 @@ export const renderSummary = (container, summary) => {
 };
 
 // ── Clear ─────────────────────────────────────────────
-export const clearContent = (output, status, registered, summary) => {
+export const clearContent = (output, status, registered, summary, search) => {
   output.innerHTML = `<p class="text-muted col">No tournaments loaded yet.</p>`;
   status.className = "";
   status.innerHTML = `<p class="text-muted fst-italic">Click "Load Tournaments" to see available tournaments.</p>`;
   registered.innerHTML = `<p class="text-muted">Select a tournament above to view registration details.</p>`;
   summary.innerHTML = `<p class="text-muted">No summary on registrations yet.</p>`;
+  search.value = "";
 };
 
 // What changed and why:
