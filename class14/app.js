@@ -61,9 +61,6 @@ document.addEventListener("click", (e) => {
       }
       const confirmed = filtered.filter((r) => r.status === "confirmed");
 
-      // console.log(confirmed);
-      // console.log(tournamentData);
-
       const selectedGame = tournamentData.filter((t) => t.id === tournamentId);
       console.log(selectedGame[0]);
 
