@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Argentina",
+    "group": "A",
+    "points": 6,
+    "played": 2,
+    "goalDifference": 3
+  },
+  {
+    "id": 2,
+    "name": "France",
+    "group": "B",
+    "points": 4,
+    "played": 2,
+    "goalDifference": 2
+  },
+  {
+    "id": 3,
+    "name": "Brazil",
+    "group": "C",
+    "points": 3,
+    "played": 2,
+    "goalDifference": 1
+  },
+  {
+    "id": 4,
+    "name": "Japan",
+    "group": "D",
+    "points": 6,
+    "played": 2,
+    "goalDifference": 4
+  },
+  {
+    "id": 5,
+    "name": "Morocco",
+    "group": "E",
+    "points": 4,
+    "played": 2,
+    "goalDifference": 1
+  },
+  {
+    "id": 6,
+    "name": "Canada",
+    "group": "F",
+    "points": 1,
+    "played": 2,
+    "goalDifference": -2
+  }
+]
