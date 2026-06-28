@@ -1,4 +1,8 @@
 export class TeamCard extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+  }
   connectedCallback() {
     this.render();
   }
@@ -39,9 +43,9 @@ export class TeamCard extends HTMLElement {
   }
 
   render() {
-    const shadow = this.attachShadow({ mode: "open" });
+    // const shadow = this.shadowRoot || this.attachShadow({ mode: "open" });
 
-    shadow.innerHTML = `
+    this.shadowRoot.innerHTML = `
         ${this.renderStyle()}
         
         <div class="card">
@@ -144,3 +148,32 @@ customElements.define("team-card", TeamCard);
 // Third render
 //     ↓
 // Reuse it again ✅
+
+// Claude comparison between 2 approaches
+// ── Constructor approach ──────────────────────────────
+// export class TeamCard extends HTMLElement {
+//   constructor() {
+//     super();                              // always required first
+//     this.attachShadow({ mode: "open" }); // runs once, guaranteed
+//   }
+
+//   connectedCallback() {
+//     this.render();
+//   }
+
+//   render() {
+//     this.shadowRoot.innerHTML = `...`;   // shadow always exists here
+//   }
+// }
+
+// // ── this.shadowRoot || approach ───────────────────────
+// export class TeamCard extends HTMLElement {
+//   connectedCallback() {
+//     this.render();
+//   }
+
+//   render() {
+//     const shadow = this.shadowRoot || this.attachShadow({ mode: "open" });
+//     shadow.innerHTML = `...`;
+//   }
+// }

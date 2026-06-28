@@ -20,9 +20,24 @@ export class Team {
     this._group = group;
     this._points = points;
     this._played = played;
-    this.goalDifference = goalDifference;
+    this._goalDifference = goalDifference;
   }
 
+  get id() {
+    return this._id;
+  }
+  get name() {
+    return this._name;
+  }
+  get group() {
+    return this._group;
+  }
+  get played() {
+    return this._played;
+  }
+  get goalDifference() {
+    return this._goalDifference;
+  }
   get summary() {
     return `${this._name} - ${this._group} - ${this._points}`;
   }
@@ -32,7 +47,6 @@ export class Team {
       this._points = value;
     } else throw new Error("Point must be a non-negative number");
   }
-
   get points() {
     return this._points;
   }

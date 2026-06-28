@@ -209,6 +209,7 @@ export const clearContent = (output, status, registered, summary, search) => {
   search.value = "";
 };
 
+//Claude's comments
 // What changed and why:
 // Extracted field() helper — every <p><strong>Label:</strong> value</p> was copy-pasted across three functions. Now it's one line per field and the pattern is impossible to get inconsistent.
 // Extracted card() helper — the card shell HTML was duplicated between renderTournament and renderRegistration. One helper covers both.
