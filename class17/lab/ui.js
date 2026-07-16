@@ -6,6 +6,7 @@ export const renderTeam = (team, container) => {
   teamCard.setAttribute("points", team.points);
   teamCard.setAttribute("played", team.played);
   teamCard.setAttribute("goal-difference", team.goalDifference);
+  teamCard.setAttribute("id", team.id);
 
   container.append(teamCard);
 };

@@ -54,7 +54,7 @@ export class FeaturedTournament extends Tournament {
     features,
   ) {
     super(id, name, game, entryFee, maxPlayers, registeredPlayers, status);
-    this.features;
+    this.features = features;
   }
 }
 
@@ -70,6 +70,6 @@ export class PremiumTournament extends Tournament {
     premium,
   ) {
     super(id, name, game, entryFee, maxPlayers, registeredPlayers, status);
-    this.premium;
+    this.premium = premium;
   }
 }

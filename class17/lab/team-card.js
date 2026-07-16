@@ -7,6 +7,11 @@ export class TeamCard extends HTMLElement {
     this.render();
   }
   // read data in getters
+
+  getID() {
+    return this.getAttribute("id");
+  }
+
   getName() {
     return this.getAttribute("name") || "Unknown";
   }
@@ -54,6 +59,7 @@ export class TeamCard extends HTMLElement {
             <p><strong>Points:</strong> ${this.getPoints()}</p>
             <p><strong>Played:</strong> ${this.getPlayed()}</p>
             <p><strong>Goal Difference:</strong> ${this.getGoalDifference()}</p>
+            <button class="btn" data-id="${this.getID()}">View detail</button>
         </div>   
     `;
   }

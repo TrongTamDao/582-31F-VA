@@ -7,8 +7,14 @@ const clearBtn = document.getElementById("clear-btn");
 
 const teamContainers = document.getElementById("teams-container");
 
-const teamData = await fetchTeams("team.json");
+let teamData = [];
+try {
+  teamData = await fetchTeams("team.json");
+} catch (error) {
+  console.log(error);
+}
 
 loadBtn.addEventListener("click", () => {
+  teamContainers.innerHTML = "";
   teamData.forEach((team) => renderTeam(team, teamContainers));
 });
