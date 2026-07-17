@@ -1,45 +1,39 @@
-import { getFestivalData } from "./api.js";
-
+import getFestivalData from "./api.js";
 import { Artist } from "./Artist.js";
-
-import { Performances } from "./Performance.js";
-
+import { Performance } from "./Performance.js";
 import { FeaturedPerformance } from "./FeaturedPerformance.js";
+import "./PerformanceCard.js";
+import { renderLoading, renderErrors, renderPerformances } from "./ui.js";
 
-import "./Performance.js";
-
-import { renderLoading, renderErrors, renderPerformance } from "./ui.js";
-
-const loadButton = document.getElementById("load-festival");
-
-const searchInput = document.getElementById("search");
-
+// FIX: correct DOM selectors matching index.html
+const loadButton = document.getElementById("load-lineup");
+const searchInput = document.getElementById("search-input");
 const stageFilter = document.getElementById("stage-filter");
+const ticketsFilter = document.getElementById("tickets-filter");
+const featuredFilter = document.getElementById("featured-filter");
+const sortSelect = document.getElementById("sort-select");
+const resetButton = document.getElementById("reset-filters");
 
-const ticketsFilter = document.getElementById("ticket-filter");
-
-const featuredFilter = document.getElementById("featured-only");
-
-const sortSelect = document.getElementById("sort-filter");
-
-const resetButton = document.getElementById("reset");
-
-let performances;
+// FIX: keep two arrays — source never gets overwritten by filtering
+let allPerformances = [];
 
 async function loadLineup() {
-  renderLoading;
+  // FIX: call renderLoading() with parentheses
+  renderLoading();
 
   loadButton.disabled = true;
 
   try {
-    const data = getFestivalData();
+    // FIX: await getFestivalData()
+    const data = await getFestivalData();
 
     const artists = data.artists.map(
       (item) => new Artist(item.id, item.name, item.country, item.genre),
     );
 
-    performances = data.performances.map((item) => {
-      const artist = artists.filter((artist) => artist.id === item.artistId);
+    allPerformances = data.performances.map((item) => {
+      // FIX: use find() to get ONE matching artist object (not filter which returns array)
+      const artist = artists.find((a) => a.id === item.artistId) ?? null;
 
       if (item.featured) {
         return new FeaturedPerformance(
@@ -54,7 +48,7 @@ async function loadLineup() {
         );
       }
 
-      return new Performances(
+      return new Performance(
         item.id,
         item.title,
         artist,
@@ -65,78 +59,109 @@ async function loadLineup() {
       );
     });
 
-    renderPerformance(performances);
+    // Sort by time initially
+    allPerformances.sort((a, b) => a.time.localeCompare(b.time));
 
+    renderPerformances(allPerformances);
+
+    // Enable all controls after successful load
     searchInput.disabled = false;
     stageFilter.disabled = false;
     ticketsFilter.disabled = false;
     featuredFilter.disabled = false;
     sortSelect.disabled = false;
     resetButton.disabled = false;
+
+    // FIX: re-enable load button after success (original kept it disabled)
+    loadButton.disabled = false;
   } catch (error) {
-    console.log("Lineup loaded:", error);
-
+    // FIX: use console.error (not console.log) for errors
+    console.error("Lineup load failed:", error);
     renderErrors(error);
-  }
 
-  loadButton.disabled = true;
+    // FIX: re-enable load button so user can retry
+    loadButton.disabled = false;
+  }
 }
 
 function applyFilters() {
-  const searchTerm = searchInput.value;
-
+  // FIX: trim search term for clean comparison
+  const searchTerm = searchInput.value.trim().toLowerCase();
   const stage = stageFilter.value;
-
-  const availableOnly = ticketsFilter.value;
-
-  const featuredOnly = featuredFilter.value;
-
+  // FIX: checkboxes use .checked not .value
+  const availableOnly = ticketsFilter.checked;
+  const featuredOnly = featuredFilter.checked;
   const sort = sortSelect.value;
 
-  performances = performances.filter((performance) => {
+  // FIX: filter on allPerformances (source), not overwrite performances
+  let filtered = allPerformances.filter((performance) => {
+    // FIX: case-insensitive search on both title and artist name
     const matchesSearch =
-      performance.title.includes(searchTerm) ||
-      performance.artist.includes(searchTerm);
+      searchTerm === "" ||
+      performance.title.toLowerCase().includes(searchTerm) ||
+      (performance.artist &&
+        performance.artist.name.toLowerCase().includes(searchTerm));
 
-    const matchesStage = stage === "" || performance.time === stage;
+    // FIX: compare performance.stage not performance.time
+    const matchesStage = stage === "" || performance.stage === stage;
 
-    const matchesTickets = !availableOnly || performance.ticketsRemaining;
+    // FIX: check ticketsRemaining > 0
+    const matchesTickets = !availableOnly || performance.ticketsRemaining > 0;
 
-    const matchesFeatured = !featuredOnly || performance instanceof Performance;
+    // FIX: check instanceof FeaturedPerformance (not Performance)
+    const matchesFeatured =
+      !featuredOnly || performance instanceof FeaturedPerformance;
 
-    return matchesSearch || matchesStage || matchesTickets || matchesFeatured;
+    // FIX: AND logic — all conditions must match
+    return matchesSearch && matchesStage && matchesTickets && matchesFeatured;
   });
 
+  // FIX: sort on a copy so source order is not affected
+  filtered = [...filtered];
+
+  // FIX: time sort
+  if (sort === "time-asc") {
+    filtered.sort((a, b) => a.time.localeCompare(b.time));
+  }
+
+  // FIX: numeric sort using subtraction (not > or <)
   if (sort === "price-asc") {
-    performances.sort((a, b) => a.ticketPrice > b.ticketPrice);
+    filtered.sort((a, b) => a.ticketPrice - b.ticketPrice);
   }
 
   if (sort === "price-desc") {
-    performances.sort((a, b) => a.ticketPrice < b.ticketPrice);
+    filtered.sort((a, b) => b.ticketPrice - a.ticketPrice);
   }
 
+  // FIX: string sort using localeCompare (not subtraction)
   if (sort === "artist-asc") {
-    performances.sort((a, b) => a.artist.name - b.artist.name);
+    filtered.sort((a, b) =>
+      (a.artist?.name ?? "").localeCompare(b.artist?.name ?? ""),
+    );
   }
 
-  renderPerformance(performances);
+  renderPerformances(filtered);
 }
 
 function resetFilters() {
   searchInput.value = "";
   stageFilter.value = "";
-  ticketsFilter.value = false;
-  featuredFilter.value = false;
+  // FIX: use .checked = false for checkboxes (not .value)
+  ticketsFilter.checked = false;
+  featuredFilter.checked = false;
   sortSelect.value = "time-asc";
 
-  applyFilters;
+  // FIX: call applyFilters() with parentheses
+  applyFilters();
 }
 
-loadButton.addEventListener("click", loadLineup());
+// FIX: pass function references — no () — so they don't run immediately
+loadButton.addEventListener("click", loadLineup);
 
-searchInput.addEventListener("change", applyFilters);
+// FIX: "input" event for live search while typing (not "change")
+searchInput.addEventListener("input", applyFilters);
 
-stageFilter.addEventListener("input", applyFilters());
+stageFilter.addEventListener("change", applyFilters);
 
 ticketsFilter.addEventListener("change", applyFilters);
 
@@ -144,4 +169,4 @@ featuredFilter.addEventListener("change", applyFilters);
 
 sortSelect.addEventListener("change", applyFilters);
 
-resetButton.addEventListener("click", resetFilters());
+resetButton.addEventListener("click", resetFilters);

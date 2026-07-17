@@ -207,3 +207,38 @@ export class PerformanceCard {                          // missing extends HTMLE
 
 customElements.define("performance", PerformanceCard()); // invalid name, class called as function
 ```
+
+## Bug 6 — `app.js`: 14 bugs across imports, DOM selectors, async flow, filtering, sorting, and event registration
+
+**File:** `js/app.js`
+
+**Original defective code (selected examples):**
+
+```javascript
+import { Artist } from "./Artist.js";                // Artist is now a named export ✓
+import { Performances } from "./Performance.js";     // wrong class name
+import "./PerformanceCards.js";                      // wrong filename
+import { renderLoading, renderErrors, renderPerformance } from "./ui.js"; // renderPerformance wrong name
+
+const loadButton    = document.getElementById("load-festival");  // wrong id
+const searchInput   = document.getElementById("search");         // wrong id
+const ticketsFilter = document.getElementById("ticket-filter");  // wrong id
+const featuredFilter= document.getElementById("featured-only");  // wrong id
+const sortSelect    = document.getElementById("sort-filter");    // wrong id
+const resetButton   = document.getElementById("reset");          // wrong id
+
+renderLoading;                          // not called
+const data = getFestivalData();         // not awaited
+artists.filter(a => a.id === item.artistId);  // returns array not single object
+performances = performances.filter(…); // overwrites source — destroys state
+ticketsFilter.value; featuredFilter.value;    // checkboxes use .checked
+matchesSearch || matchesStage || …;     // OR logic — should be AND
+performance.time === stage;             // should be performance.stage
+instanceof Performance;                 // should be FeaturedPerformance
+(a,b) => a.ticketPrice > b.ticketPrice; // boolean not number for sort
+(a,b) => a.artist.name - b.artist.name; // subtraction on strings gives NaN
+applyFilters;                           // not called in resetFilters
+loadButton.addEventListener("click", loadLineup()); // runs immediately
+stageFilter.addEventListener("input", applyFilters()); // runs immediately
+loadButton.disabled = true;             // at end — should be false
+```

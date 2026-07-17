@@ -1,109 +1,71 @@
-export class PerformanceCard {
-    constructor() {
-        const shadow =
-            this.attachShadow({
-                mode: "open"
-            });
+export class PerformanceCard extends HTMLElement {
+  // FIX: use a private field to avoid getter/setter recursion
+  #performance = null;
 
-        super();
+  constructor() {
+    // FIX: super() must come before any use of this
+    super();
 
-        const template =
-            document.getElementById(
-                "performance-template"
-            );
+    const shadow = this.attachShadow({ mode: "open" });
 
-        shadow.appendChild(
-            template.cloneNode()
-        );
+    // FIX: correct template id matches index.html
+    const template = document.getElementById("performance-card-template");
+
+    // FIX: clone template.content (not the template element); deep = true
+    shadow.appendChild(template.content.cloneNode(true));
+  }
+
+  set performance(value) {
+    // FIX: store in private field to avoid infinite recursion
+    this.#performance = value;
+    // FIX: call render() as a method
+    this.render();
+  }
+
+  get performance() {
+    // FIX: return private field
+    return this.#performance;
+  }
+
+  render() {
+    const p = this.#performance;
+    if (!p) return;
+
+    // FIX: query article from shadowRoot, not from document
+    const article = this.shadowRoot.querySelector(".performance-card");
+
+    // Reset classes then apply correct ones
+    article.className = "performance-card";
+
+    // FIX: featured check uses p.featured property (from FeaturedPerformance)
+    if (p.featured) {
+      article.classList.add("featured");
     }
 
-    set performance(value) {
-        this.performance = value;
-        this.render;
+    // FIX: sold-out when !hasTickets (no tickets remaining)
+    if (!p.hasTickets) {
+      article.classList.add("sold-out");
     }
 
-    get performance() {
-        return this.performance;
-    }
+    // FIX: displayLabel is a getter (no parentheses)
+    this.shadowRoot.querySelector(".title").textContent = p.title;
+    this.shadowRoot.querySelector(".artist").textContent =
+      p.artist.displayLabel;
 
-    render() {
-        const article =
-            document.querySelector(
-                ".performance-card"
-            );
+    // FIX: country and genre were swapped
+    this.shadowRoot.querySelector(".country").textContent = p.artist.country;
+    this.shadowRoot.querySelector(".genre").textContent = p.artist.genre;
 
-        article.className =
-            "performance-card";
+    // FIX: stage and time were swapped
+    this.shadowRoot.querySelector(".stage").textContent = `Stage: ${p.stage}`;
+    this.shadowRoot.querySelector(".time").textContent = `Time: ${p.time}`;
 
-        if (this.performance.featured) {
-            article.classList.add(
-                "sold-out"
-            );
-        }
-
-        if (!this.performance.hasTickets) {
-            article.classList.add(
-                "featured"
-            );
-        }
-
-        this.shadowRoot
-            .querySelector(".title")
-            .textContent =
-                this.performance.title;
-
-        this.shadowRoot
-            .querySelector(".artist")
-            .textContent =
-                this.performance
-                    .artist.displayLabel();
-
-        this.shadowRoot
-            .querySelector(".country")
-            .textContent =
-                this.performance.artist.genre;
-
-        this.shadowRoot
-            .querySelector(".genre")
-            .textContent =
-                this.performance.artist.country;
-
-        this.shadowRoot
-            .querySelector(".stage")
-            .textContent =
-                `Stage: ${
-                    this.performance.time
-                }`;
-
-        this.shadowRoot
-            .querySelector(".time")
-            .textContent =
-                `Time: ${
-                    this.performance.stage
-                }`;
-
-        this.shadowRoot
-            .querySelector(".price")
-            .textContent =
-                this.performance
-                    .formattedPrice();
-
-        this.shadowRoot
-            .querySelector(".tickets")
-            .textContent =
-                this.performance
-                    .ticketLabel();
-
-        this.shadowRoot
-            .querySelector(
-                ".lineup-label"
-            )
-            .textContent =
-                this.performance.lineupLabel;
-    }
+    // FIX: formattedPrice and ticketLabel are getters — no ()
+    this.shadowRoot.querySelector(".price").textContent = p.formattedPrice;
+    this.shadowRoot.querySelector(".tickets").textContent = p.ticketLabel;
+    this.shadowRoot.querySelector(".lineup-label").textContent = p.lineupLabel;
+  }
 }
 
-customElements.define(
-    "performance",
-    PerformanceCard()
-);
+// FIX: pass class reference (not PerformanceCard()); name must contain a hyphen
+customElements.define("performance-card", PerformanceCard);
