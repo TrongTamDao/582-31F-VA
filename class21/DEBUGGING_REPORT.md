@@ -120,3 +120,90 @@ get lineupLabel()     { return "Regular lineup"; }
 static totalAvailableTickets(p) { return p.reduce((t, x) => t + x.ticketsRemaining, 0); }
 static averagePrice(p)          { return `$${(total / p.length).toFixed(2)}`; }
 ```
+
+## Bug 4 — `FeaturedPerformance.js`: did not extend `Performance`; `super()` arguments in wrong order; `featured` set to `false`; `lineupLabel` returned wrong string
+
+**File:** `js/FeaturedPerformance.js`
+
+**Original defective code:**
+
+```javascript
+import Performance from "./Performance.js";        // default import — Performance is named export
+
+export class FeaturedPerformance {                 // missing "extends Performance"
+  constructor(...) {
+    super(title, id, stage, artist, ticketPrice, ticketsRemaining, time);  // wrong order
+    this.featured = false;                         // should be true
+  }
+
+  get lineupLabel() { return "Regular lineup"; }  // wrong — should be "Featured performance"
+}
+```
+
+**Correction:**
+
+```javascript
+import { Performance } from "./Performance.js";
+
+export class FeaturedPerformance extends Performance {
+  constructor(
+    id,
+    title,
+    artist,
+    stage,
+    time,
+    ticketPrice,
+    ticketsRemaining,
+    featured,
+  ) {
+    super(id, title, artist, stage, time, ticketPrice, ticketsRemaining);
+    this.featured = true;
+  }
+
+  get lineupLabel() {
+    return "Featured performance";
+  }
+}
+```
+
+## Bug 5 — `PerformanceCard.js`: did not extend `HTMLElement`; `super()` after `this`; wrong template id; shallow clone; getter/setter recursion; wrong DOM queries; swapped classes and properties; getters called as methods; invalid element name
+
+**File:** `js/PerformanceCard.js`
+
+**Original defective code:**
+
+```javascript
+export class PerformanceCard {                          // missing extends HTMLElement
+  constructor() {
+    const shadow = this.attachShadow({ mode: "open" }); // this before super()
+    super();
+    const template = document.getElementById("performance-template"); // wrong id
+    shadow.appendChild(template.cloneNode());           // shallow clone, clones template not content
+  }
+
+  set performance(value) {
+    this.performance = value;  // infinite recursion — calls itself
+    this.render;               // not invoked
+  }
+
+  get performance() {
+    return this.performance;   // infinite recursion
+  }
+
+  render() {
+    const article = document.querySelector(".performance-card"); // queries document not shadowRoot
+    if (this.performance.featured)  article.classList.add("sold-out");  // swapped
+    if (!this.performance.hasTickets) article.classList.add("featured"); // swapped
+    // ...
+    .artist.displayLabel()    // displayLabel is a getter not a method
+    .country → genre          // swapped
+    .genre   → country        // swapped
+    .stage   → time           // swapped
+    .time    → stage          // swapped
+    .formattedPrice()         // getter called as method
+    .ticketLabel()            // getter called as method
+  }
+}
+
+customElements.define("performance", PerformanceCard()); // invalid name, class called as function
+```
