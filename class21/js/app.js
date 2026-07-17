@@ -1,4 +1,4 @@
-import getFestivalData from "./api.js";
+import { getFestivalData } from "./api.js";
 
 import { Artist } from "./Artist.js";
 
@@ -6,7 +6,7 @@ import { Performances } from "./Performance.js";
 
 import { FeaturedPerformance } from "./FeaturedPerformance.js";
 
-import "./PerformanceCards.js";
+import "./Performance.js";
 
 import { renderLoading, renderErrors, renderPerformance } from "./ui.js";
 
