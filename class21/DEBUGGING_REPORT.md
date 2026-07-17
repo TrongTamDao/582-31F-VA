@@ -77,3 +77,46 @@ get displayLabel() {
   return `${this.name} — ${this.country}`;
 }
 ```
+
+## Bug 3 — `Performance.js`: six separate property, logic, and calculation bugs
+
+**File:** `js/Performance.js`
+
+**Original defective code:**
+
+```javascript
+this.name             = title;           // wrong property name — should be this.title
+this.stage            = time;            // stage and time swapped
+this.time             = stage;
+this.ticketPrice      = String(ticketPrice);    // must stay numeric
+this.ticketsRemaining = String(ticketsRemaining);
+
+get formattedPrice()  { return `$${this.ticketPrice.toFixed}`; }  // .toFixed not called
+get hasTickets()      { return this.ticketsRemaining < 0; }        // wrong comparison
+get lineupLabel()     { return "Featured performance"; }            // wrong for base class
+
+static totalAvailableTickets(performances) {
+  return performances.reduce((total, p) => total + p.ticketsRemaining, ""); // string seed
+}
+
+static averagePrice(performances) {
+  return (total / performances).toFixed(2); // divides by array not length
+}
+```
+
+**Correction:**
+
+```javascript
+this.title            = title;
+this.stage            = stage;
+this.time             = time;
+this.ticketPrice      = Number(ticketPrice);
+this.ticketsRemaining = Number(ticketsRemaining);
+
+get formattedPrice()  { return `$${this.ticketPrice.toFixed(2)}`; }
+get hasTickets()      { return this.ticketsRemaining > 0; }
+get lineupLabel()     { return "Regular lineup"; }
+
+static totalAvailableTickets(p) { return p.reduce((t, x) => t + x.ticketsRemaining, 0); }
+static averagePrice(p)          { return `$${(total / p.length).toFixed(2)}`; }
+```
