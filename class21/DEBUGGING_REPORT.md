@@ -42,3 +42,38 @@ const performances = await performanceResponse.json();
 
 return { artists, performances };
 ```
+
+## Bug 2 — `Artist.js`: constructor properties assigned in wrong order; `displayLabel` used wrong property names
+
+**File:** `js/Artist.js`
+
+**Original defective code:**
+
+```javascript
+constructor(id, name, country, genre) {
+  this.id         = name;     // wrong
+  this.artistName = id;       // wrong property name
+  this.country    = genre;    // wrong
+  this.genre      = country;  // wrong
+}
+
+get displayLabel() {
+  return `${this.artistName} — ` + `${this.genre}`;
+  // artistName holds id value; genre holds country value
+}
+```
+
+**Correction:**
+
+```javascript
+constructor(id, name, country, genre) {
+  this.id      = id;
+  this.name    = name;
+  this.country = country;
+  this.genre   = genre;
+}
+
+get displayLabel() {
+  return `${this.name} — ${this.country}`;
+}
+```
